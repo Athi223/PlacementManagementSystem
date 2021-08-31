@@ -1,0 +1,55 @@
+{% extends layout %}
+
+{% block title %}Approvals{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="card shadow-lg w-three-quarter mx-auto">
+		<h4>Pending Approvals</h4>
+		{% if approvals %}
+			<div class="table-responsive border p-5" style="max-height: 55vh;">
+				<table class="table table-striped table-bordered sortable">
+					<thead>
+						<tr>
+							<th>PRN</th>
+							<th>Company</th>
+							<th>Job Role</th>
+							<th>Job Location</th>
+							<th>Package</th>
+							<th class="no-sort">Approve</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for approval in approvals %}
+							<tr>
+								<td>{{ approval.studentId.prn }}</td>
+								<td>{{ approval.offerId.companyId.companyId.first_name }}</td>
+								<td>{{ approval.offerId.jobRole }}</td>
+								<td>{{ approval.offerId.jobLocation }}</td>
+								<td>{{ approval.offerId.package }}</td>
+								<td>
+									<form method="POST">
+										{% csrf_token %}
+										<input type="hidden" value="{{ approval.studentId.id }}" name="studentId" />
+										<input type="hidden" value="{{ approval.offerId.id }}" name="offerId" />
+										<button class="btn btn-success" type="submit"><i class="fas fa-thumbs-up"></i></button>
+									</form>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="text-center mt-20">
+				<form method="POST">
+					{% csrf_token %}
+					<button class="btn btn-primary" type="submit">Approve All</button>
+				</form>
+			</div>
+		{% else %}
+			<hr />
+			<h5 class="text-muted">No Pending Approvals found</h5>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends layout %}
+
+{% block title %}Home{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/segment7" type="text/css"/>
+	<style>
+		.segment {
+			font-family: 'Segment7Standard';
+			font-weight: normal;
+			font-style: italic;
+		}
+		.deepshadow {
+			color: #e0dfdc;
+			letter-spacing: .1em;
+			text-shadow:
+			0 -1px 0 #262626,
+			0 1px 0 #242424,
+			0 2px 0 #222,
+			0 3px 0 #202020,
+			0 4px 0 #1c1c1c,
+			0 5px 0 #1a1a1a,
+			0 6px 0 #181818,
+			0 7px 0 #161616,
+			0 8px 0 #141414,
+			0 9px 0 #121212,
+			0 22px 30px rgba(0, 0, 0, 0.9);
+		}
+	</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid text-center">
+	<div class="card p-0 shadow-lg w-three-quarter mx-auto" style="background-color: #333;">
+		<h1 class="deepshadow">Emerald College Placement Cell</h1>
+	</div>
+	<div class="row">
+		<div class="col-12 col-md-6 col-lg-3">
+			<div class="card shadow-lg" data-tilt data-tilt-scale="1.1">
+				<h6 class="card-title">Companies Last Year</h6>
+				<h3 class="text-primary segment">123</h3>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 col-lg-3">
+			<div class="card shadow-lg" data-tilt data-tilt-scale="1.1">
+				<h6 class="card-title">Placements Last Year</h6>
+				<h3 class="text-success segment">789</h3>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 col-lg-3">
+			<div class="card shadow-lg" data-tilt data-tilt-scale="1.1">
+				<h6 class="card-title">Highest Package</h6>
+				<h3 class="text-secondary segment">13 LPA</h3>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 col-lg-3">
+			<div class="card shadow-lg" data-tilt data-tilt-scale="1.1">
+				<h6 class="card-title">Average Package</h6>
+				<h3 class="text-danger segment">6 LPA</h3>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="card shadow-lg" data-tilt>
+				<h4>Prominent Hiring Companies</h4>
+				<div class="splide" id="splide-prominent">
+					<div class="splide__track">
+						<ul class="splide__list">
+							<li class="splide__slide">
+								<i class="fab fa-amazon fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-apple fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-facebook fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-hackerrank fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-google fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-microsoft fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-paypal fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-reddit fa-5x"></i>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="card shadow-lg" data-tilt>
+				<h4>New Companies Last Year</h4>
+				<div class="splide" id="splide-new">
+					<div class="splide__track">
+						<ul class="splide__list">
+							<li class="splide__slide">
+								<i class="fab fa-atlassian fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-cc-visa fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-digital-ocean fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-github fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-kaggle fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-linkedin fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-pinterest fa-5x"></i>
+							</li>
+							<li class="splide__slide">
+								<i class="fab fa-spotify fa-5x"></i>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	document.querySelectorAll('.splide').forEach(splide => new Splide(splide, {
+		type: 'loop',
+		arrows: false,
+		pagination: false,
+		perPage: 3,
+		perMove: 1,
+		autoplay: true,
+		interval: 2000,
+	}).mount())
+</script>
+{% endblock %}

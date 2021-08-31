@@ -1,0 +1,49 @@
+{% extends layout %}
+
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="card shadow-lg">
+		{% if visible %}
+			<h4>Offers you Applied for</h4>
+			<div class="table-responsive border p-5" style="max-height: 60vh;">
+				<table class="table table-bordered sortable">
+					<thead>
+						<tr>
+							<th>Company</th>
+							<th>Job Role</th>
+							<th>Job Location</th>
+							<th>Bond</th>
+							<th>Deadline</th>
+							<th>Package</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for offer in offers %}
+							<tr>
+								<td>{{ offer.offerId.companyId.companyId.first_name }}</td>
+								<td>{{ offer.offerId.jobRole }}</td>
+								<td>{{ offer.offerId.jobLocation }}</td>
+								<td>{{ offer.offerId.bond }} Years</td>
+								<td>{{ offer.offerId.deadline }}</td>
+								<td>{{ offer.offerId.package }}</td>
+								{% if offer.status == 0 %}
+									<td class="text-secondary font-weight-bold">Ongoing</td>
+								{% elif offer.status == 1 %}
+									<td class="text-success font-weight-bold">Accepted</td>
+								{% elif offer.status == 2 %}
+									<td class="text-danger font-weight-bold">Rejected</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			<h4 class="text-center">You can view Applied Offers only after your Profile gets Verified</h4>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+<div class="sidebar-menu">
+	<!-- Sidebar links and titles -->
+	<h5 class="sidebar-title">Offers</h5>
+	<div class="sidebar-divider"></div>
+	<a href="/company/offers/" class="sidebar-link {% if request.path == '/company/offers/' %}active{% endif %}">Manage Offers</a>
+	<br />
+	<h5 class="sidebar-title">Students</h5>
+	<div class="sidebar-divider"></div>
+	<a href="/company/enrollments/" class="sidebar-link {% if request.path == '/company/enrollments/' %}active{% endif %}">View Enrollments</a>
+	<a href="/company/results/" class="sidebar-link {% if request.path == '/company/results/' %}active{% endif %}">Inform Results</a>
+</div>
+{% endblock %}

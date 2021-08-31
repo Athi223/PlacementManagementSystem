@@ -1,0 +1,180 @@
+{% load static %}
+{% with user_group=user.groups.all.0.name|lower %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Meta tags -->
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+		<meta name="viewport" content="width=device-width" />
+
+		<!-- Favicon and title -->
+		<link rel="icon" type="image/png" href="{% static 'img/emerald.png' %}" sizes="16x16">
+		<title>{% block title %}{% endblock %} | Placement Management System</title>
+
+		<!-- Halfmoon CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@2.4.21/dist/css/splide-core.min.css">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/sortable.css' %}">
+		<script src="https://kit.fontawesome.com/823e8efa26.js" crossorigin="anonymous"></script>
+		{% block head %}{% endblock %}
+	</head>
+	<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true" data-sidebar-shortcut-enabled="true" data-set-preferred-mode-onload="true">
+		<!-- Modals go here -->
+		<div class="modal" id="modal-auth" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<!-- <h5 class="modal-title text-center" id="auth-type-message">Sign In</h5> -->
+				<form action="/login/" method="POST">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="username" class="required">Username</label>
+						<input type="text" id="username" name="username" class="form-control" placeholder="Username" required="required">
+					</div>
+					<div class="form-group">
+						<label for="password" class="required">Password</label>
+						<input type="password" id="password" name="password" class="form-control" placeholder="Password" required="required">
+					</div>
+					<div class="form-group d-none" id="user_group_container">
+						<label for="user_group" class="required">Register As</label>
+						<select class="form-control" id="user_group" name="user_group">
+							<option value="" selected="selected" disabled="disabled">Student / College / Company</option>
+							<option value="Student">Student</option>
+							<option value="College">College</option>
+							<option value="Company">Company</option>
+						</select>
+					</div>
+					<button class="btn btn-primary btn-block" type="submit" id="auth-type-message">Sign In</button>
+				</form>
+				<button onclick="authToggle(this)" class="btn btn-secondary btn-block mt-10">Need an Account? Register Now</button>
+				{% if error %}
+					<p class="text-danger text-center">{{ error }}</p>
+				{% endif %}
+				<div class="text-right mt-10"> <!-- text-right = text-align: right, margin-top: 1rem (10px) -->
+					<a href="#modal-auth" class="hyperlink">Forgot password?</a> <!-- hyperlink = used on regular links to remove anti-aliasing in dark mode --> 
+				</div>
+				</div>
+			</div>
+		</div>
+		{% block modals %}
+		{% endblock %}
+
+		<!-- Page wrapper start -->
+		<div class="page-wrapper with-navbar with-sidebar with-navbar-fixed-bottom" data-sidebar-type="full-height overlayed-sm-and-down">
+
+			<!-- Sticky alerts (toasts), empty container -->
+			<div class="sticky-alerts"></div>
+
+			<!-- Navbar start -->
+			<nav class="navbar bg-dark-light-lm">
+				<!-- Navbar content (with toggle sidebar button) -->
+				<div class="navbar-content">
+					<button class="btn btn-action" type="button" onclick="halfmoon.toggleSidebar()">
+						<i class="fas fa-bars"></i>
+						<span class="sr-only">Toggle Sidebar</span> <!-- sr-only = show only on screen readers -->
+					</button>
+					<button class="btn btn-action ml-10" type="button" onclick="halfmoon.toggleDarkMode()">
+						<i class="fas fa-sun hidden-lm"></i>
+						<i class="fas fa-moon hidden-dm"></i>
+						<span class="sr-only">Toggle Darkmode</span> <!-- sr-only = show only on screen readers -->
+					</button>
+				</div>
+				<div class="navbar-content ml-auto">
+					{% if user.is_authenticated %}
+						<div class="dropdown with-arrow">
+							<button class="btn" data-toggle="dropdown" type="button" id="user-dropdown-btn">
+								<i class="fas fa-user"></i>
+								{{ user }}
+								<i class="fa fa-angle-down" aria-hidden="true"></i>
+							</button>
+							<div class="dropdown-menu dropdown-menu-right w-200" aria-labelledby="user-dropdown-btn"> <!-- w-200 = width: 20rem (200px) -->
+								<a href="/logout" class="dropdown-item">Logout</a>
+							</div>
+						</div>
+					{% else %}
+						<button class="btn btn-primary" onclick="halfmoon.toggleModal('modal-auth')">Login / Register</button>
+					{% endif %}
+				</div>
+				<!-- Navbar content (with the dropdown menu) -->
+				<div class="navbar-content d-md-none ml-auto"> <!-- d-md-none = display: none on medium screens and up (width > 768px), ml-auto = margin-left: auto -->
+				</div>
+			</nav>
+			<!-- Navbar end -->
+
+			<!-- Sidebar overlay -->
+			<div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
+
+			<!-- Sidebar start -->
+			<div class="sidebar">
+				<!-- Sidebar content -->
+				<div class="sidebar-content">
+					<h3 class="mt-10">
+						Welcome,<br />
+						{% if user.is_authenticated %}
+							{{ user }}
+						{% else %}
+							Guest
+						{% endif %}
+					</h3>
+				</div>
+				<!-- Sidebar links and titles -->
+				<h5 class="sidebar-title">Overview</h5>
+				<div class="sidebar-divider"></div>
+				<a href="/" class="sidebar-link {% if request.path == '/'|add:user_group|add:'/' or request.path == '/' %}active{% endif %}">Home</a>
+				{% block sidebar %}
+				{% endblock %}
+			</div>
+			<!-- Sidebar end -->
+
+			<!-- Content wrapper start -->
+			<div class="content-wrapper bg-light-lm">
+				{% block content %}
+				{% endblock %}
+			</div>
+			<!-- Content wrapper end -->
+
+			<!-- Navbar fixed bottom start -->
+			<nav class="navbar navbar-fixed-bottom bg-dark-light-lm">
+				<span class="navbar-text text-monospace text-light ml-auto mr-20"><i>Made by Team Emerald</i></span>
+			</nav>
+			<!-- Navbar fixed bottom end -->
+
+		</div>
+		<!-- Page wrapper end -->
+
+		<!-- Halfmoon JS -->
+		<script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
+		<!-- Vanilla Tilt JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.1/vanilla-tilt.min.js" integrity="sha512-xTXLkWCanTzPE4g+vyMXdJ1MYKwuhdJqxNfPDE8sHnwwHBXTZY0VNWBiCRiDtGEtLzmLkK5GCSXshPCP2kt8Ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<!-- Splide JS -->
+		<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@2.4.21/dist/js/splide.min.js"></script>
+		<script type="text/javascript" src="{% static 'js/sortable.js' %}"></script>
+		<script>
+			function authToggle(button) {
+				auth_type_message = document.querySelector('#auth-type-message')
+				if(auth_type_message.innerHTML == 'Sign In')
+				{
+					auth_type_message.innerHTML = 'Register'
+					document.querySelector('#user_group_container').classList.remove('d-none')
+					document.querySelector('#user_group').setAttribute('required', true)
+				}
+				else
+				{
+					auth_type_message.innerHTML = 'Sign In'
+					document.querySelector('#user_group_container').classList.add('d-none')
+					document.querySelector('#user_group').setAttribute('required', false)
+				}
+				button.innerHTML = button.innerHTML == 'Need an Account? Register Now' ? 'Already have an Account? Sign In' : 'Need an Account? Register Now'
+			}
+			{% if error %}
+				halfmoon.toggleModal('modal-auth')
+			{% endif %}
+		</script>
+		{% block scripts %}
+		{% endblock %}
+	</body>
+</html>
+
+{% endwith %}

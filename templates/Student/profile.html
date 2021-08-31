@@ -1,0 +1,187 @@
+{% extends layout %}
+{% load split %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="card py-15 shadow-lg w-three-quarter mx-auto">
+		<form action="/student/profile/" method="POST" onsubmit="formSubmit(this)">
+			{% csrf_token %}
+			<h4>Personal Details</h4>
+			<div class="form-row row-eq-spacing-sm">
+				<div class="col-sm">
+					<label for="first_name" class="required">First name</label>
+					<input type="text" class="form-control" value="{{ user.first_name }}" id="first_name" name="first_name" placeholder="First name" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="last_name" class="required">Last name</label>
+					<input type="text" class="form-control" value="{{ user.last_name }}" id="last_name" name="last_name" placeholder="Last name" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="dob" class="required">Date of birth</label>
+					<input type="date" class="form-control" value="{{ profile.dob|date:'Y-m-d' }}" id="dob" name="dob" required="required">
+				</div>
+			</div>
+			<div class="form-row row-eq-spacing-sm">
+				<div class="col-sm">
+					<label for="department" class="required">Department</label>
+					<input type="text" class="form-control" value="{{ profile.department }}" id="department" name="department" placeholder="Department" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="phoneNumber" class="required">Phone Number</label>
+					<input type="tel" class="form-control" value="{{ profile.phoneNumber }}" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="email" class="required">Email ID</label>
+					<input type="email" class="form-control" value="{{ user.email }}" id="email" name="email" placeholder="Email ID" required="required">
+				</div>
+			</div>
+			<hr/>
+			<h4>Academic Details</h4>
+			<div class="form-row row-eq-spacing-sm">
+				<div class="col-sm">
+					<label for="prn" class="required">PRN</label>
+					<input type="text" class="form-control" minlength="9" maxlength="9" value="{{ profile.prn }}" id="prn" name="prn" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="cgpa" class="required">CGPA</label>
+					<input type="number" min="0" step="0.01" class="form-control" value="{{ academic.cgpa }}" id="cgpa" name="cgpa" placeholder="CGPA" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="yearGap" class="required">Gap (In Years)</label>
+					<input type="number" min="0" class="form-control" value="{{ academic.yearGap }}" id="yearGap" name="yearGap" placeholder="Gap (In Years)" required="required">
+				</div>
+				
+			</div>
+			<div class="form-row row-eq-spacing-sm">
+				<div class="col-sm">
+					<label for="liveBacklog" class="required">Live Backlogs</label>
+					<input type="number" min="0" class="form-control" value="{{ academic.liveBacklog }}" id="liveBacklog" name="liveBacklog" placeholder="Number of Live Backlogs" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="deadBacklog" class="required">Dead Backlogs</label>
+					<input type="number" min="0" class="form-control" value="{{ academic.deadBacklog }}" id="deadBacklog" name="deadBacklog" placeholder="Number of Live Backlogs" required="required">
+				</div>
+				<div class="col-sm">
+					<label for="passingYear" class="required">Year of Graduation</label>
+					<input type="number" min="0" class="form-control" value="{{ academic.passingYear }}" id="passingYear" name="passingYear" placeholder="Year of Graduation" required="required">
+				</div>
+			</div>
+			<div class="form-row row-eq-spacing-sm" id="skills">
+				{% if academic.skillSet %}
+					{% with academic.skillSet|split:"," as skills %}
+						{% for skill in skills %}
+							{% with skill|split:":" as skill_level %}
+								<div class="col-sm">
+									<div class="input-group">
+										<select class="skill form-control">
+											<option value="" disabled="disabled">Skill</option>
+											<option value="cpp" {% if skill_level.0 == 'cpp' %}selected="selected"{% endif %}>CPP</option>
+											<option value="java" {% if skill_level.0 == 'java' %}selected="selected"{% endif %}>Java</option>
+											<option value="python" {% if skill_level.0 == 'python' %}selected="selected"{% endif %}>Python</option>
+										</select>
+										<select class="level form-control">
+											<option value="" disabled="disabled">Level</option>
+											<option value="1" {% if skill_level.1 == 1 %}selected="selected"{% endif %}>1</option>
+											<option value="2" {% if skill_level.1 == 2 %}selected="selected"{% endif %}>2</option>
+											<option value="3" {% if skill_level.1 == 3 %}selected="selected"{% endif %}>3</option>
+										</select>
+										<div class="input-group-append">
+											<button class="btn btn-secondary" type="button" onclick="removeSkill(this)">
+												<i class="fas fa-trash-alt" aria-hidden="true"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							{% endwith %}
+						{% endfor %}
+					{% endwith %}
+				{% endif %}
+			</div>
+			<input type="hidden" name="skillSet" id="skillSet">
+			<div class="d-flex justify-content-between">
+				<div>
+					{% if profile.verificationStatus == 0 %}
+						<span class="badge font-size-16 p-5 badge-primary">Status:  Not Filled</span>
+					{% elif profile.verificationStatus == 1 %}
+						<span class="badge font-size-16 p-5 badge-success">Status: Verified</span>
+					{% elif profile.verificationStatus == 2 %}
+						<span class="badge font-size-16 p-5 badge-danger">Status: Unverified</span>
+						{% elif profile.verificationStatus == 3 %}
+						<span class="badge font-size-16 p-5 badge-secondary">Status: Pending Verification</span>
+					{% endif %}
+				</div>
+				<div>
+					<button type="button" class="btn btn-primary mr-5" id="addSkill">Add Skill</button>
+					<button type="reset" class="btn btn-secondary ml-5">Reset</button>
+					<button type="submit" class="btn btn-success mx-5">Update</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	{% if request.method == 'POST' %}
+		halfmoon.initStickyAlert({
+			title: "Profile Updated",
+			content: "All the changes in profile are updated successfully",
+			alertType: "alert-success",
+			fillType: "filled"
+		})
+	{% endif %}
+	{% if profile.verificationStatus == 2 %}
+		halfmoon.initStickyAlert({
+			title: "Profile Verfication Failed",
+			content: "Your Profile was not verified by the College. Please re-check all your details and Update your Profile",
+			alertType: "alert-danger",
+			fillType: "filled"
+		})
+	{% endif %}
+	document.getElementById('addSkill').addEventListener('click', () => {
+		const input_group = document.createElement('div')
+		input_group.className = "col-sm"
+		input_group.innerHTML = '<div class="input-group">' +
+			'<select class="skill form-control">' +
+				'<option value="" selected="selected" disabled="disabled">Skill</option>' +
+				'<option value="cpp">CPP</option>' +
+				'<option value="java">Java</option>' +
+				'<option value="python">Python</option>' +
+			'</select>' +
+			'<select class="level form-control">' +
+				'<option value="" selected="selected" disabled="disabled">Level</option>' +
+				'<option value="1">1</option>' +
+				'<option value="2">2</option>' +
+				'<option value="3">3</option>' +
+			'</select>' +
+			'<div class="input-group-append">' +
+				'<button class="btn btn-secondary" type="button" onclick="removeSkill(this)"><i class="fas fa-trash-alt"></i></button>' +
+			'</div>' +
+		'</div>'
+		document.getElementById('skills').appendChild(input_group)
+		skillButtonUpdater()
+	})
+	function removeSkill(element) {
+		const parent = element.parentNode.parentNode.parentNode
+		parent.parentNode.removeChild(parent)
+		skillButtonUpdater()
+	}
+	function formSubmit(form) {
+		let skillSet = ""
+		form.querySelectorAll('.input-group').forEach(skill => {
+			skillSet += skill.querySelector('.skill').value + ":" + skill.querySelector('.level').value + ","
+		})
+		document.getElementById('skillSet').value = skillSet.substring(0, skillSet.length-1)
+	}
+	function skillButtonUpdater() {
+		if(document.getElementById('skills').childElementCount == 3) {
+			document.getElementById('addSkill').disabled = true
+		}
+		else {
+			document.getElementById('addSkill').disabled = false
+		}
+	}
+</script>
+{% endblock %}

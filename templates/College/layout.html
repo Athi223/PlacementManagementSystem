@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+<div class="sidebar-menu">
+	<!-- Sidebar links and titles -->
+	<h5 class="sidebar-title">Students</h5>
+	<div class="sidebar-divider"></div>
+	<a href="/college/students/" class="sidebar-link {% if request.path == '/college/students/' %}active{% endif %}">All Students</a>
+	<a href="/college/pending/" class="sidebar-link {% if request.path == '/college/pending/' %}active{% endif %}">Pending Verifications</a>
+	<br />
+	<h5 class="sidebar-title">Placements</h5>
+	<div class="sidebar-divider"></div>
+	<a href="/college/approvals/" class="sidebar-link {% if request.path == '/college/approvals/' %}active{% endif %}">Approvals</a>
+</div>
+{% endblock %}

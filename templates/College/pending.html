@@ -1,0 +1,64 @@
+{% extends layout %}
+
+{% block title %}Pending Verifications{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="card shadow-lg w-three-quarter mx-auto">
+		<h4>Pending Verifications</h4>
+		{% if students %}
+			<div class="table-responsive border p-5" style="max-height: 55vh;">
+				<table class="table table-striped table-bordered sortable">
+					<thead>
+						<tr>
+							<th>PRN</th>
+							<th>CGPA</th>
+							<th>Live Backlog</th>
+							<th>Dead Backlog</th>
+							<th>Gap (In Years)</th>
+							<th class="no-sort">Accept</th>
+							<th class="no-sort">Reject</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for student in students %}
+							<tr>
+								<td>{{ student.studentId.prn }}</td>
+								<td>{{ student.cgpa }}</td>
+								<td>{{ student.liveBacklog }}</td>
+								<td>{{ student.deadBacklog }}</td>
+								<td>{{ student.yearGap }}</td>
+								<td>
+									<form method="POST">
+										{% csrf_token %}
+										<input type="hidden" value="{{ student.studentId.prn }}" name="prn" />
+										<input type="hidden" value="1" name="verificationStatus" />
+										<button class="btn btn-success" type="submit"><i class="fas fa-check"></i></button>
+									</form>
+								</td>
+								<td>
+									<form method="POST">
+										{% csrf_token %}
+										<input type="hidden" value="{{ student.studentId.prn }}" name="prn" />
+										<input type="hidden" value="2" name="verificationStatus" />
+										<button class="btn btn-danger" type="submit"><i class="fas fa-times"></i></button>
+									</form>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="text-center mt-20">
+				<form method="POST">
+					{% csrf_token %}
+					<button class="btn btn-primary" type="submit">Auto Verify</button>
+				</form>
+			</div>
+		{% else %}
+			<hr />
+			<h5 class="text-muted">No Pending Verifications found</h5>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

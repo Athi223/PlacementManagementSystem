@@ -1,0 +1,169 @@
+{% extends layout %}
+
+{% block title %}Offers{% endblock %}
+
+{% block modals %}
+<div class="modal" id="modal-offer" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<h5 class="modal-title text-center">Create New Offer</h5>
+			<form action="/company/offers/" method="POST" onsubmit="formSubmit(this)">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="jobRole" class="required">Job Role</label>
+					<input type="text" id="jobRole" name="jobRole" class="form-control" placeholder="Job Role" required="required">
+				</div>
+				<div class="form-group">
+					<label for="jobLocation" class="required">Job Location</label>
+					<input type="text" id="jobLocation" name="jobLocation" class="form-control" placeholder="Job Location" required="required">
+				</div>
+				<div class="form-row row-eq-spacing">
+					<div class="col">
+						<label for="package" class="required">Package</label>
+					<input type="number" id="package" name="package" class="form-control" placeholder="Package" required="required">
+					</div>
+					<div class="col">
+						<label for="passingYear" class="required">Year of Graduation</label>
+						<input type="number" id="passingYear" name="passingYear" class="form-control" placeholder="Year of Graduation" required="required">
+					</div>
+				</div>
+				<div class="form-row row-eq-spacing">
+					<div class="col">
+						<label for="bond" class="required">Bond</label>
+						<input type="number" id="bond" name="bond" class="form-control" placeholder="Bond (In Years)" required="required">
+					</div>
+					<div class="col">
+						<label for="deadline" class="required">Deadline</label>
+						<input type="date" id="deadline" name="deadline" class="form-control" placeholder="Deadline" required="required">
+					</div>
+				</div>
+				<div class="form-row row-eq-spacing">
+					<div class="col">
+						<label for="cgpa" class="required">CGPA</label>
+						<input type="number" step="0.01" id="cgpa" name="cgpa" class="form-control" placeholder="CGPA" required="required">
+					</div>
+					<div class="col">
+						<label for="yearGap" class="required">Year Gap</label>
+						<input type="number" id="yearGap" name="yearGap" class="form-control" placeholder="Year Gap" required="required">
+					</div>
+				</div>
+				<div class="form-row row-eq-spacing">
+					<div class="col">
+						<label for="liveBacklog" class="required">Live Backlog</label>
+						<input type="number" id="liveBacklog" name="liveBacklog" class="form-control" placeholder="Live Backlog" required="required">
+					</div>
+					<div class="col">
+						<label for="deadBacklog" class="required">Dead Backlog</label>
+						<input type="number" id="deadBacklog" name="deadBacklog" class="form-control" placeholder="Dead Backlog" required="required">
+					</div>
+				</div>
+				<div id="skills"><input type="hidden" name="skillSet" id="skillSet"></div>
+				<div class="text-center mt-10">
+					<button class="btn btn-primary" type="button" onclick="addSkill()">Add Required Skill</button>
+				</div>
+				<div class="text-center mt-10">
+					<button class="btn btn-success" type="submit">Create Offer</button>
+					<button class="btn btn-danger" type="reset">Reset</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="card py-20 shadow-lg">
+		<div class="table-responsive border p-5" style="max-height: 65vh;">
+			<table class="table table-bordered table-striped sortable">
+				<thead>
+					<tr>
+						<th colspan="5" class="text-center text-danger no-sort">Offer</th>
+						<th colspan="4" class="text-center text-primary no-sort">Criteria</th>
+						<!-- <th><i class="fas fa-trash-alt"></i></th> -->
+					</tr>
+					<tr>
+						<th class="text-danger">Job Role</th>
+						<th class="text-danger">Job Location</th>
+						<th class="text-danger">Bond</th>
+						<th class="text-danger">Deadline</th>
+						<th class="text-danger">Package</th>
+						<th class="text-primary">CGPA</th>
+						<th class="text-primary">Live Backlogs</th>
+						<th class="text-primary">Dead Backlogs</th>
+						<th class="text-primary">Year of Graduation</th>
+						<th class="text-primary">Year(s) Gap</th>
+						<th class="text-primary">Skills</th>
+						<!-- <th><i class="fas fa-trash-alt"></i></th> -->
+					</tr>
+				</thead>
+				<tbody>
+					{% for offer in offers %}
+						<tr>
+							<td>{{ offer.offerId.jobRole }}</td>
+							<td>{{ offer.offerId.jobLocation }}</td>
+							<td>{{ offer.offerId.bond }} Years</td>
+							<td>{{ offer.offerId.deadline }}</td>
+							<td>{{ offer.offerId.package }}</td>
+							<td>{{ offer.cgpa }}</td>
+							<td>{{ offer.liveBacklog }}</td>
+							<td>{{ offer.deadBacklog }}</td>
+							<td>{{ offer.passingYear }}</td>
+							<td>{{ offer.yearGap }}</td>
+							<td>{{ offer.skillSet }}</td>
+							<!-- <td><button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button></td> -->
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="text-center mt-20">
+			<button class="btn btn-success"onclick="halfmoon.toggleModal('modal-offer')">Create New Offer</button>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	{% if request.method == 'POST' %}
+		halfmoon.initStickyAlert({
+			title: "Offer Created",
+			content: "Offer Created successfully",
+			alertType: "alert-success",
+			fillType: "filled"
+		})
+	{% endif %}
+	function addSkill() {
+		const input_group = document.createElement('div')
+		input_group.className = "input-group mt-5"
+		input_group.innerHTML = '<select class="skill form-control">' +
+			'<option value="" selected="selected" disabled="disabled">Select Skill</option>' +
+			'<option value="cpp">CPP</option>' +
+			'<option value="java">Java</option>' +
+			'<option value="python">Python</option>' +
+		'</select>' +
+		'<select class="level form-control">' +
+			'<option value="" selected="selected" disabled="disabled">Select Skill Level</option>' +
+			'<option value="1">1</option>' +
+			'<option value="2">2</option>' +
+			'<option value="3">3</option>' +
+		'</select>' +
+		'<div class="input-group-append">' +
+			'<button class="btn btn-secondary" type="button" onclick="removeSkill(this)"><i class="fas fa-trash-alt"></i></button>' +
+		'</div>'
+		document.getElementById('skills').appendChild(input_group)
+	}
+	function removeSkill(element) {
+		const parent = element.parentNode.parentNode
+		parent.parentNode.removeChild(parent)
+	}
+	function formSubmit(form) {
+		let skillSet = ""
+		form.querySelectorAll('.input-group').forEach(skill => {
+			skillSet += skill.querySelector('.skill').value + ":" + skill.querySelector('.level').value + ","
+		})
+		document.getElementById('skillSet').value = skillSet.substring(0, skillSet.length-1)
+	}
+</script>
+{% endblock %}

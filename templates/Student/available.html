@@ -1,0 +1,61 @@
+{% extends layout %}
+
+{% block title %}Available{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="card shadow-lg">
+		{% if visible %}
+			<h4 class="text-center">{{ visible }}</h4>
+		{% else %}
+			<h4>Available Offers</h4>
+			<div class="table-responsive border p-5" style="max-height: 60vh;">
+				<table class="table table-bordered sortable">
+					<thead>
+						<tr>
+							<th>Company</th>
+							<th>Job Role</th>
+							<th>Job Location</th>
+							<th>Bond</th>
+							<th>Deadline</th>
+							<th>Package</th>
+							<th class="no-sort">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for offer in offers %}
+							<tr>
+								<td>{{ offer.companyId.companyId.first_name }}</td>
+								<td>{{ offer.jobRole }}</td>
+								<td>{{ offer.jobLocation }}</td>
+								<td>{{ offer.bond }} Years</td>
+								<td>{{ offer.deadline }}</td>
+								<td>{{ offer.package }}</td>
+								<td>
+									<form method="POST">
+										{% csrf_token %}
+										<input type="hidden" value="{{ offer.id }}" name="offerId" />
+										<button class="btn btn-success" type="submit">Apply</button></td>
+									</form>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	{% if request.method == 'POST' %}
+		halfmoon.initStickyAlert({
+			title: "Applied Successfully",
+			content: "You have successfully applied for Job",
+			alertType: "alert-success",
+			fillType: "filled"
+		})
+	{% endif %}
+</script>
+{% endblock %}
