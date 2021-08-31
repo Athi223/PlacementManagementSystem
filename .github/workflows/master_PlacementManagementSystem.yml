@@ -59,4 +59,4 @@ jobs:
         with:
           app-name: 'PlacementManagementSystem'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_ca9d0e20c88b4760907900cbf004033c }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_d1f5ae835e6e49859bb4801f4f1c96bb }}
